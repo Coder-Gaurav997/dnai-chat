@@ -1,0 +1,99 @@
+import { motion, AnimatePresence } from "framer-motion";
+import { X, Cpu, Plus, Trash2, Settings } from "lucide-react";
+import { AVAILABLE_MODELS, Model } from "@/lib/models";
+import dnLogo from "@/assets/dn-logo.png";
+
+interface SidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+  selectedModel: Model;
+  onSelectModel: (model: Model) => void;
+  onNewChat: () => void;
+}
+
+const Sidebar = ({ isOpen, onClose, selectedModel, onSelectModel, onNewChat }: SidebarProps) => {
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="fixed inset-0 bg-background/60 backdrop-blur-sm z-40"
+          />
+
+          {/* Sidebar */}
+          <motion.aside
+            initial={{ x: -320, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: -320, opacity: 0 }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed left-0 top-0 bottom-0 w-80 bg-card border-r border-border z-50 flex flex-col"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <div className="flex items-center gap-2">
+                <img src={dnLogo} alt="DarkNeuronAI" className="w-8 h-8" />
+                <span className="font-display font-semibold text-foreground">DarkNeuronAI</span>
+              </div>
+              <button onClick={onClose} className="p-2 rounded-lg hover:bg-secondary transition-colors text-muted-foreground">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* New Chat */}
+            <div className="p-3">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => { onNewChat(); onClose(); }}
+                className="w-full flex items-center gap-2 px-4 py-3 rounded-xl border border-border hover:bg-secondary transition-colors text-sm font-medium text-foreground"
+              >
+                <Plus className="w-4 h-4" />
+                New Chat
+              </motion.button>
+            </div>
+
+            {/* Model Selection */}
+            <div className="px-3 pb-3">
+              <div className="flex items-center gap-2 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <Cpu className="w-3.5 h-3.5" />
+                Select Model
+              </div>
+              <div className="space-y-1">
+                {AVAILABLE_MODELS.map((model) => (
+                  <motion.button
+                    key={model.id}
+                    whileHover={{ x: 4 }}
+                    onClick={() => { onSelectModel(model); }}
+                    className={`w-full text-left px-4 py-3 rounded-xl text-sm transition-all ${
+                      selectedModel.id === model.id
+                        ? "gradient-bg-subtle border border-primary/30 text-foreground"
+                        : "hover:bg-secondary text-secondary-foreground"
+                    }`}
+                  >
+                    <div className="font-medium">{model.name}</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">{model.description}</div>
+                  </motion.button>
+                ))}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="mt-auto p-4 border-t border-border">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Settings className="w-3.5 h-3.5" />
+                Powered by HuggingFace
+              </div>
+            </div>
+          </motion.aside>
+        </>
+      )}
+    </AnimatePresence>
+  );
+};
+
+export default Sidebar;
