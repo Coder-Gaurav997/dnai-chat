@@ -13,7 +13,7 @@ serve(async (req) => {
   try {
     const { messages, model, max_tokens } = await req.json();
 
-    const API_URL = `https://api-inference.huggingface.co/models/${model}/v1/chat/completions`;
+    const API_URL = `https://router.huggingface.co/hf-inference/models/${model}/v1/chat/completions`;
 
     const response = await fetch(API_URL, {
       method: "POST",
