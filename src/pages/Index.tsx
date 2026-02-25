@@ -89,7 +89,7 @@ const Index = () => {
           <Menu className="w-5 h-5" />
         </button>
         <div className="flex items-center gap-2">
-          <img src={dnLogo} alt="DarkNeuronAI" className="w-7 h-7" />
+          <img src={dnLogo} alt="DarkNeuronAI" className="w-7 h-7 rounded-full" />
           <span className="font-display font-semibold text-foreground text-sm">DarkNeuronAI</span>
         </div>
         <div className="px-3 py-1 rounded-full bg-secondary text-xs text-muted-foreground font-medium">
@@ -122,7 +122,7 @@ const Index = () => {
                   <motion.img
                     src={dnLogo}
                     alt="DarkNeuronAI"
-                    className="w-24 h-24 relative z-10"
+                    className="w-24 h-24 relative z-10 rounded-full"
                     animate={{ y: [0, -8, 0] }}
                     transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
                   />
@@ -204,7 +204,7 @@ const Index = () => {
                         className="flex gap-3"
                       >
                         <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
-                          <img src={dnLogo} alt="DN" className="w-8 h-8" />
+                          <img src={dnLogo} alt="DN" className="w-8 h-8 rounded-full" />
                         </div>
                         <div className="bg-card border border-border rounded-2xl px-4 py-3 flex gap-1.5">
                           {[0, 1, 2].map((i) => (
