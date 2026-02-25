@@ -13,12 +13,18 @@ serve(async (req) => {
   try {
     const { messages, model, max_tokens } = await req.json();
 
+    const hfToken = Deno.env.get("HUGGINGFACE_API_TOKEN");
+    if (!hfToken) {
+      throw new Error("HUGGINGFACE_API_TOKEN not set");
+    }
+
     const API_URL = `https://router.huggingface.co/hf-inference/models/${model}/v1/chat/completions`;
 
     const response = await fetch(API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${hfToken}`,
       },
       body: JSON.stringify({
         messages,
