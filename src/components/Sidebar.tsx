@@ -36,7 +36,7 @@ const Sidebar = ({ isOpen, onClose, selectedModel, onSelectModel, onNewChat }: S
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-border">
               <div className="flex items-center gap-2">
-                <img src={dnLogo} alt="DarkNeuronAI" className="w-8 h-8" />
+                <img src={dnLogo} alt="DarkNeuronAI" className="w-8 h-8 rounded-full" />
                 <span className="font-display font-semibold text-foreground">DarkNeuronAI</span>
               </div>
               <button onClick={onClose} className="p-2 rounded-lg hover:bg-secondary transition-colors text-muted-foreground">

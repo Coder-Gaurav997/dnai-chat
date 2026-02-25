@@ -30,7 +30,7 @@ const ChatMessage = ({ message, index }: ChatMessageProps) => {
         {isUser ? (
           <span className="text-sm font-display font-semibold text-secondary-foreground">U</span>
         ) : (
-          <img src={dnLogo} alt="DN" className="w-8 h-8 object-cover" />
+          <img src={dnLogo} alt="DN" className="w-8 h-8 object-cover rounded-full" />
         )}
       </motion.div>
 
