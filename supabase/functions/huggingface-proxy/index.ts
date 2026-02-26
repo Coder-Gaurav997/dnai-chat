@@ -2,10 +2,12 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 serve(async (req) => {
+  // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -15,16 +17,22 @@ serve(async (req) => {
 
     const hfToken = Deno.env.get("HUGGINGFACE_API_TOKEN");
     if (!hfToken) {
-      throw new Error("HUGGINGFACE_API_TOKEN not set");
+      return new Response(
+        JSON.stringify({ error: "HUGGINGFACE_API_TOKEN is not configured" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
-    const API_URL = `https://router.huggingface.co/hf-inference/v1/chat/completions`;
+    // OpenAI-compatible endpoint — model goes in the body, not the URL
+    const API_URL = "https://router.huggingface.co/hf-inference/v1/chat/completions";
+
+    console.log("Calling HF API with model:", model);
 
     const response = await fetch(API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${hfToken}`,
+        Authorization: `Bearer ${hfToken}`,
       },
       body: JSON.stringify({
         model,
@@ -34,24 +42,24 @@ serve(async (req) => {
       }),
     });
 
+    const responseText = await response.text();
+
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error("HuggingFace API error:", response.status, errorText);
-      return new Response(JSON.stringify({ error: errorText }), {
-        status: response.status,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      console.error("HuggingFace API error:", response.status, responseText);
+      return new Response(
+        JSON.stringify({ error: responseText }),
+        { status: response.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
-    const data = await response.json();
-    return new Response(JSON.stringify(data), {
+    return new Response(responseText, {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
     console.error("Edge function error:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({ error: error.message }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
   }
 });
