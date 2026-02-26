@@ -18,7 +18,7 @@ serve(async (req) => {
       throw new Error("HUGGINGFACE_API_TOKEN not set");
     }
 
-    const API_URL = `https://router.huggingface.co/hf-inference/models/${model}/v1/chat/completions`;
+    const API_URL = `https://router.huggingface.co/hf-inference/v1/chat/completions`;
 
     const response = await fetch(API_URL, {
       method: "POST",
@@ -27,6 +27,7 @@ serve(async (req) => {
         "Authorization": `Bearer ${hfToken}`,
       },
       body: JSON.stringify({
+        model,
         messages,
         max_tokens: max_tokens || 512,
         stream: false,
