@@ -23,7 +23,7 @@ export async function generateResponse(
     throw new Error(`HuggingFace error: ${data.error}`);
   }
 
-  const content = data?.choices?.[0]?.message?.content;
+  const content = data?.response;
   if (!content) {
     console.error("Unexpected response format:", data);
     throw new Error("No response content received");
