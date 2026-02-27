@@ -2,10 +2,13 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { Menu, Sparkles } from "lucide-react";
 import { ChatMessage as ChatMessageType, AVAILABLE_MODELS, Model } from "@/lib/models";
+import { ChatConfig, DEFAULT_CONFIG } from "@/lib/config";
 import { generateResponse } from "@/lib/huggingface";
 import ChatMessage from "@/components/ChatMessage";
 import ChatInput from "@/components/ChatInput";
 import Sidebar from "@/components/Sidebar";
+import ThemeToggle from "@/components/ThemeToggle";
+import BackgroundEffects from "@/components/BackgroundEffects";
 import dnLogo from "@/assets/dn-logo.png";
 
 const Index = () => {
@@ -13,6 +16,7 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedModel, setSelectedModel] = useState<Model>(AVAILABLE_MODELS[0]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [config, setConfig] = useState<ChatConfig>(DEFAULT_CONFIG);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const isIntro = messages.length === 0;
@@ -36,7 +40,7 @@ const Index = () => {
         role: m.role,
         content: m.content,
       }));
-      const response = await generateResponse(selectedModel, history);
+      const response = await generateResponse(selectedModel, history, config);
       const assistantMessage: ChatMessageType = {
         id: crypto.randomUUID(),
         role: "assistant",
@@ -61,19 +65,16 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
-      {/* Background effects */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-primary/5 blur-[120px] animate-pulse-glow" />
-        <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] rounded-full bg-accent/5 blur-[120px] animate-pulse-glow" style={{ animationDelay: "1.5s" }} />
-      </div>
+      <BackgroundEffects />
 
-      {/* Sidebar */}
       <Sidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         selectedModel={selectedModel}
         onSelectModel={setSelectedModel}
         onNewChat={handleNewChat}
+        config={config}
+        onConfigChange={setConfig}
       />
 
       {/* Header */}
@@ -92,8 +93,11 @@ const Index = () => {
           <img src={dnLogo} alt="DarkNeuronAI" className="w-7 h-7 rounded-full" />
           <span className="font-display font-semibold text-foreground text-sm">DarkNeuronAI</span>
         </div>
-        <div className="px-3 py-1 rounded-full bg-secondary text-xs text-muted-foreground font-medium">
-          {selectedModel.name}
+        <div className="flex items-center gap-2">
+          <div className="px-3 py-1 rounded-full bg-secondary text-xs text-muted-foreground font-medium">
+            {selectedModel.name}
+          </div>
+          <ThemeToggle />
         </div>
       </motion.header>
 
@@ -102,7 +106,6 @@ const Index = () => {
         <div className="flex-1 flex flex-col relative z-10">
           <AnimatePresence mode="wait">
             {isIntro ? (
-              /* Intro Screen */
               <motion.div
                 key="intro"
                 initial={{ opacity: 0 }}
@@ -111,7 +114,6 @@ const Index = () => {
                 transition={{ duration: 0.5 }}
                 className="flex-1 flex flex-col items-center justify-center px-4 gap-8"
               >
-                {/* Animated Logo */}
                 <motion.div
                   initial={{ scale: 0, rotate: -180 }}
                   animate={{ scale: 1, rotate: 0 }}
@@ -128,7 +130,6 @@ const Index = () => {
                   />
                 </motion.div>
 
-                {/* Title */}
                 <div className="text-center space-y-3">
                   <motion.h1
                     initial={{ opacity: 0, y: 20 }}
@@ -149,7 +150,6 @@ const Index = () => {
                   </motion.p>
                 </div>
 
-                {/* Suggestion chips */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -173,7 +173,6 @@ const Index = () => {
                   ))}
                 </motion.div>
 
-                {/* Input */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -184,14 +183,12 @@ const Index = () => {
                 </motion.div>
               </motion.div>
             ) : (
-              /* Chat Screen */
               <motion.div
                 key="chat"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="flex-1 flex flex-col"
               >
-                {/* Messages */}
                 <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6">
                   <div className="max-w-3xl mx-auto space-y-6">
                     {messages.map((msg, i) => (
@@ -222,7 +219,6 @@ const Index = () => {
                   </div>
                 </div>
 
-                {/* Bottom Input */}
                 <motion.div
                   initial={{ y: 50, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}

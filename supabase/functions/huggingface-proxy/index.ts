@@ -14,7 +14,7 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, max_tokens } = await req.json();
+    const { messages, system_prompt, temperature, top_p, max_tokens } = await req.json();
 
     console.log("Calling HF Space with", messages.length, "messages");
 
@@ -23,9 +23,10 @@ serve(async (req) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         messages,
-        temperature: 0.7,
-        top_p: 0.9,
-        max_tokens: max_tokens || 256,
+        system_prompt: system_prompt || "You are DN-Humour, a helpful and humorous AI assistant, created by DarkNeuronAI. Always answer in a funny, sarcastic and humorous way. You like to joke and make fun of everything.",
+        temperature: temperature ?? 0.7,
+        top_p: top_p ?? 0.8,
+        max_tokens: max_tokens ?? 64,
       }),
     });
 
