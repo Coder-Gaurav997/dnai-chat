@@ -6,46 +6,33 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+const API_URL = "https://darkneuronai-chat-humour-llm-v1.hf.space/api/chat";
+
 serve(async (req) => {
-  // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { messages, model, max_tokens } = await req.json();
+    const { messages, max_tokens } = await req.json();
 
-    const hfToken = Deno.env.get("HUGGINGFACE_API_TOKEN");
-    if (!hfToken) {
-      return new Response(
-        JSON.stringify({ error: "HUGGINGFACE_API_TOKEN is not configured" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    // OpenAI-compatible endpoint — model goes in the body, not the URL
-    const API_URL = "https://router.huggingface.co/hf-inference/v1/chat/completions";
-
-    console.log("Calling HF API with model:", model);
+    console.log("Calling HF Space with", messages.length, "messages");
 
     const response = await fetch(API_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${hfToken}`,
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model,
         messages,
-        max_tokens: max_tokens || 512,
-        stream: false,
+        temperature: 0.7,
+        top_p: 0.9,
+        max_tokens: max_tokens || 256,
       }),
     });
 
     const responseText = await response.text();
 
     if (!response.ok) {
-      console.error("HuggingFace API error:", response.status, responseText);
+      console.error("HF Space error:", response.status, responseText);
       return new Response(
         JSON.stringify({ error: responseText }),
         { status: response.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }

@@ -17,6 +17,6 @@ export const AVAILABLE_MODELS: Model[] = [
     id: "dnai-humour",
     name: "DNAI Humour",
     description: "A lightweight instruct model with a sense of humour",
-    huggingFaceId: "meta-llama/Llama-3.2-3B-Instruct",
+    huggingFaceId: "DarkNeuronAI/dnai-humour-0.5B-instruct",
   },
 ];
