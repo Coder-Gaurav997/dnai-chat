@@ -16,7 +16,11 @@ serve(async (req) => {
   try {
     const { messages, system_prompt, temperature, top_p, max_tokens } = await req.json();
 
-    console.log("Calling HF Space with", messages.length, "messages");
+    // Request more tokens than the user setting to avoid mid-sentence cutoff,
+    // then trim to the last full stop on the client side if needed.
+    const requestedTokens = Math.min((max_tokens ?? 64) + 40, 600);
+
+    console.log("Calling HF Space with", messages.length, "messages, max_tokens:", requestedTokens);
 
     const response = await fetch(API_URL, {
       method: "POST",
@@ -26,7 +30,7 @@ serve(async (req) => {
         system_prompt: system_prompt || "You are DN-Humour, a helpful and humorous AI assistant, created by DarkNeuronAI. Always answer in a funny, sarcastic and humorous way. You like to joke and make fun of everything.",
         temperature: temperature ?? 0.7,
         top_p: top_p ?? 0.8,
-        max_tokens: max_tokens ?? 64,
+        max_tokens: requestedTokens,
       }),
     });
 

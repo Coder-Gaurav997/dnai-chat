@@ -1,12 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
-import { Menu, Sparkles } from "lucide-react";
+import { Menu, Sparkles, Cpu } from "lucide-react";
 import { ChatMessage as ChatMessageType, AVAILABLE_MODELS, Model } from "@/lib/models";
 import { ChatConfig, DEFAULT_CONFIG } from "@/lib/config";
 import { generateResponse } from "@/lib/huggingface";
 import ChatMessage from "@/components/ChatMessage";
 import ChatInput from "@/components/ChatInput";
 import Sidebar from "@/components/Sidebar";
+import ConfigPanel from "@/components/ConfigPanel";
 import ThemeToggle from "@/components/ThemeToggle";
 import BackgroundEffects from "@/components/BackgroundEffects";
 import dnLogo from "@/assets/dn-logo.png";
@@ -16,6 +17,7 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedModel, setSelectedModel] = useState<Model>(AVAILABLE_MODELS[0]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [configOpen, setConfigOpen] = useState(false);
   const [config, setConfig] = useState<ChatConfig>(DEFAULT_CONFIG);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -73,6 +75,11 @@ const Index = () => {
         selectedModel={selectedModel}
         onSelectModel={setSelectedModel}
         onNewChat={handleNewChat}
+      />
+
+      <ConfigPanel
+        isOpen={configOpen}
+        onClose={() => setConfigOpen(false)}
         config={config}
         onConfigChange={setConfig}
       />
@@ -189,7 +196,7 @@ const Index = () => {
                 animate={{ opacity: 1 }}
                 className="flex-1 flex flex-col"
               >
-                <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6">
+                <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6 scrollbar-none">
                   <div className="max-w-3xl mx-auto space-y-6">
                     {messages.map((msg, i) => (
                       <ChatMessage key={msg.id} message={msg} index={i} />
@@ -207,9 +214,9 @@ const Index = () => {
                           {[0, 1, 2].map((i) => (
                             <motion.div
                               key={i}
-                              className="w-2 h-2 rounded-full bg-muted-foreground"
-                              animate={{ y: [0, -6, 0] }}
-                              transition={{ repeat: Infinity, duration: 0.8, delay: i * 0.15 }}
+                              className="w-2 h-2 rounded-full bg-accent"
+                              animate={{ y: [0, -6, 0], opacity: [0.4, 1, 0.4] }}
+                              transition={{ repeat: Infinity, duration: 0.6, delay: i * 0.12 }}
                             />
                           ))}
                         </div>
@@ -232,6 +239,20 @@ const Index = () => {
           </AnimatePresence>
         </div>
       </LayoutGroup>
+
+      {/* Powered By DarkNeuronAI - opens config */}
+      <motion.button
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => setConfigOpen(true)}
+        className="fixed bottom-4 left-4 z-30 flex items-center gap-2 px-3 py-2 rounded-full bg-card/80 backdrop-blur-md border border-border text-xs text-muted-foreground hover:text-foreground transition-colors shadow-lg"
+      >
+        <Cpu className="w-3.5 h-3.5 text-accent" />
+        <span className="font-medium">Powered By DarkNeuronAI</span>
+      </motion.button>
     </div>
   );
 };
