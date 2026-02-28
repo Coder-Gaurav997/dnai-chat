@@ -13,16 +13,16 @@ const ChatMessage = ({ message, index }: ChatMessageProps) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      initial={{ opacity: 0, y: 15, scale: 0.97 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.4, delay: index * 0.05, ease: "easeOut" }}
+      transition={{ duration: 0.25, delay: index * 0.03, ease: "easeOut" }}
       className={`flex gap-3 ${isUser ? "flex-row-reverse" : "flex-row"}`}
     >
       {/* Avatar */}
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
-        transition={{ delay: index * 0.05 + 0.1, type: "spring", stiffness: 200 }}
+        transition={{ delay: index * 0.03 + 0.05, type: "spring", stiffness: 300, damping: 18 }}
         className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center overflow-hidden ${
           isUser ? "bg-secondary" : ""
         }`}

@@ -4,40 +4,40 @@ import { useMemo } from "react";
 const BackgroundEffects = () => {
   const particles = useMemo(
     () =>
-      Array.from({ length: 40 }, (_, i) => ({
+      Array.from({ length: 55 }, (_, i) => ({
         id: i,
         x: Math.random() * 100,
         y: Math.random() * 100,
-        size: Math.random() * 4 + 1,
-        duration: Math.random() * 6 + 4,
-        delay: Math.random() * 4,
-        opacity: Math.random() * 0.5 + 0.15,
+        size: Math.random() * 5 + 1.5,
+        duration: Math.random() * 5 + 3,
+        delay: Math.random() * 3,
+        opacity: Math.random() * 0.6 + 0.25,
       })),
     []
   );
 
   const bubbles = useMemo(
     () =>
-      Array.from({ length: 18 }, (_, i) => ({
+      Array.from({ length: 35 }, (_, i) => ({
         id: i,
         x: Math.random() * 100,
-        size: Math.random() * 50 + 15,
-        duration: Math.random() * 14 + 8,
-        delay: Math.random() * 10,
-        opacity: Math.random() * 0.08 + 0.03,
+        size: Math.random() * 55 + 20,
+        duration: Math.random() * 10 + 6,
+        delay: Math.random() * 6,
+        opacity: Math.random() * 0.18 + 0.08,
       })),
     []
   );
 
   const shinePoints = useMemo(
     () =>
-      Array.from({ length: 8 }, (_, i) => ({
+      Array.from({ length: 14 }, (_, i) => ({
         id: i,
         x: Math.random() * 100,
         y: Math.random() * 100,
-        size: Math.random() * 6 + 3,
-        duration: Math.random() * 3 + 2,
-        delay: Math.random() * 5,
+        size: Math.random() * 8 + 3,
+        duration: Math.random() * 2.5 + 1.5,
+        delay: Math.random() * 4,
       })),
     []
   );
@@ -90,7 +90,7 @@ const BackgroundEffects = () => {
       {particles.map((p) => (
         <motion.div
           key={`particle-${p.id}`}
-          className="absolute rounded-full bg-primary/60"
+          className="absolute rounded-full bg-accent/70"
           style={{
             left: `${p.x}%`,
             top: `${p.y}%`,
@@ -115,7 +115,7 @@ const BackgroundEffects = () => {
       {bubbles.map((b) => (
         <motion.div
           key={`bubble-${b.id}`}
-          className="absolute rounded-full border border-primary/15 bg-primary/[0.02]"
+          className="absolute rounded-full border border-accent/25 bg-accent/[0.06]"
           style={{
             left: `${b.x}%`,
             bottom: "-10%",
