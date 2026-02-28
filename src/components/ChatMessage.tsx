@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import { ChatMessage as ChatMessageType } from "@/lib/models";
+import TypingEffect from "@/components/TypingEffect";
 import dnLogo from "@/assets/dn-logo.png";
 
 interface ChatMessageProps {
@@ -42,9 +43,13 @@ const ChatMessage = ({ message, index }: ChatMessageProps) => {
             : "bg-card text-card-foreground border border-border"
         }`}
       >
-        <div className="prose prose-sm prose-invert max-w-none text-sm leading-relaxed">
-          <ReactMarkdown>{message.content}</ReactMarkdown>
-        </div>
+        {isUser ? (
+          <div className="prose prose-sm prose-invert max-w-none text-sm leading-relaxed">
+            <ReactMarkdown>{message.content}</ReactMarkdown>
+          </div>
+        ) : (
+          <TypingEffect content={message.content} speed={12} />
+        )}
       </div>
     </motion.div>
   );
