@@ -99,7 +99,7 @@ const Sidebar = ({ isOpen, onClose, selectedModel, onSelectModel, onNewChat, con
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => setConfigOpen(true)}
+                onClick={() => { onClose(); setConfigOpen(true); }}
                 className="w-full flex items-center gap-2 px-4 py-3 rounded-xl border border-border hover:bg-secondary transition-colors text-sm font-medium text-foreground"
               >
                 <Settings className="w-4 h-4 text-accent" />
