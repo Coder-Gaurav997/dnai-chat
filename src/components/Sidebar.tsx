@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Cpu, Plus } from "lucide-react";
+import { X, Cpu, Plus, Settings } from "lucide-react";
 import { AVAILABLE_MODELS, Model } from "@/lib/models";
+import { ChatConfig } from "@/lib/config";
+import ConfigPanel from "@/components/ConfigPanel";
 import dnLogo from "@/assets/dn-logo.png";
 
 interface SidebarProps {
@@ -9,10 +12,21 @@ interface SidebarProps {
   selectedModel: Model;
   onSelectModel: (model: Model) => void;
   onNewChat: () => void;
+  config: ChatConfig;
+  onConfigChange: (config: ChatConfig) => void;
 }
 
-const Sidebar = ({ isOpen, onClose, selectedModel, onSelectModel, onNewChat }: SidebarProps) => {
+const Sidebar = ({ isOpen, onClose, selectedModel, onSelectModel, onNewChat, config, onConfigChange }: SidebarProps) => {
+  const [configOpen, setConfigOpen] = useState(false);
+
   return (
+    <>
+      <ConfigPanel
+        isOpen={configOpen}
+        onClose={() => setConfigOpen(false)}
+        config={config}
+        onConfigChange={onConfigChange}
+      />
     <AnimatePresence>
       {isOpen && (
         <>
@@ -81,8 +95,17 @@ const Sidebar = ({ isOpen, onClose, selectedModel, onSelectModel, onNewChat }: S
             </div>
 
             {/* Footer */}
-            <div className="p-4 border-t border-border">
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <div className="p-4 border-t border-border space-y-2">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setConfigOpen(true)}
+                className="w-full flex items-center gap-2 px-4 py-3 rounded-xl border border-border hover:bg-secondary transition-colors text-sm font-medium text-foreground"
+              >
+                <Settings className="w-4 h-4 text-accent" />
+                Configuration
+              </motion.button>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground px-1">
                 <Cpu className="w-3.5 h-3.5" />
                 Powered by DarkNeuronAI
               </div>
@@ -91,6 +114,7 @@ const Sidebar = ({ isOpen, onClose, selectedModel, onSelectModel, onNewChat }: S
         </>
       )}
     </AnimatePresence>
+    </>
   );
 };
 
