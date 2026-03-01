@@ -4,7 +4,7 @@ import { useMemo } from "react";
 const BackgroundEffects = () => {
   const particles = useMemo(
     () =>
-      Array.from({ length: 55 }, (_, i) => ({
+      Array.from({ length: 20 }, (_, i) => ({
         id: i,
         x: Math.random() * 100,
         y: Math.random() * 100,
@@ -18,7 +18,7 @@ const BackgroundEffects = () => {
 
   const bubbles = useMemo(
     () =>
-      Array.from({ length: 35 }, (_, i) => ({
+      Array.from({ length: 12 }, (_, i) => ({
         id: i,
         x: Math.random() * 100,
         size: Math.random() * 55 + 20,
@@ -31,7 +31,7 @@ const BackgroundEffects = () => {
 
   const shinePoints = useMemo(
     () =>
-      Array.from({ length: 14 }, (_, i) => ({
+      Array.from({ length: 6 }, (_, i) => ({
         id: i,
         x: Math.random() * 100,
         y: Math.random() * 100,
@@ -43,7 +43,7 @@ const BackgroundEffects = () => {
   );
 
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0" style={{ willChange: 'transform', transform: 'translateZ(0)' }}>
       {/* Large gradient orbs */}
       <motion.div
         className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-primary/8 blur-[120px]"
