@@ -66,7 +66,7 @@ const Index = () => {
   const handleNewChat = () => setMessages([]);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
+    <div className="h-screen bg-background flex flex-col relative overflow-hidden">
       <BackgroundEffects />
 
       <Sidebar
@@ -189,7 +189,7 @@ const Index = () => {
                 key="chat"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="flex-1 flex flex-col"
+                className="flex-1 flex flex-col min-h-0"
               >
                 <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6 scrollbar-none">
                   <div className="max-w-3xl mx-auto space-y-6">
@@ -221,14 +221,9 @@ const Index = () => {
                   </div>
                 </div>
 
-                <motion.div
-                  initial={{ y: 50, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ type: "spring", stiffness: 200, damping: 25 }}
-                  className="sticky bottom-0 px-4 py-4 border-t border-border/50 bg-background/80 backdrop-blur-xl"
-                >
+                <div className="flex-shrink-0 px-4 py-4 border-t border-border/50 bg-background/80 backdrop-blur-xl">
                   <ChatInput onSend={handleSend} isLoading={isLoading} isIntro={false} />
-                </motion.div>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
