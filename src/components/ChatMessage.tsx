@@ -48,7 +48,7 @@ const ChatMessage = ({ message, index }: ChatMessageProps) => {
             <ReactMarkdown>{message.content}</ReactMarkdown>
           </div>
         ) : (
-          <TypingEffect content={message.content} speed={12} />
+          <TypingEffect content={message.content} speed={4} />
         )}
       </div>
     </motion.div>
