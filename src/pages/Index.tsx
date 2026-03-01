@@ -105,7 +105,7 @@ const Index = () => {
 
       {/* Main Content */}
       <LayoutGroup>
-        <div className="flex-1 flex flex-col relative z-10">
+        <div className="flex-1 flex flex-col relative z-10 min-h-0">
           <AnimatePresence mode="wait">
             {isIntro ? (
               <motion.div
