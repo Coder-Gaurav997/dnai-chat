@@ -202,8 +202,8 @@ const Index = () => {
                         animate={{ opacity: 1, y: 0 }}
                         className="flex gap-3"
                       >
-                        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
-                          <img src={dnLogo} alt="DN" className="w-8 h-8 rounded-full" />
+                        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-card border border-border flex items-center justify-center">
+                          <img src={dnLogo} alt="DN" className="w-8 h-8 object-cover rounded-full" />
                         </div>
                         <div className="bg-card border border-border rounded-2xl px-4 py-3 flex gap-1.5">
                           {[0, 1, 2].map((i) => (
