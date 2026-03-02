@@ -21,6 +21,17 @@ const Index = () => {
   const [config, setConfig] = useState<ChatConfig>(DEFAULT_CONFIG);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const allSuggestions = [
+    "Tell me a joke", "What can you do?", "Explain AI simply",
+    "Write a short poem", "Fun fact please", "Motivate me today",
+    "Summarize quantum physics", "Life advice please", "Make me laugh",
+    "Define machine learning", "Inspire me now", "Roast me gently",
+    "Explain black holes", "Give coding tips", "Tell a riddle",
+  ];
+  const [suggestions] = useState(() =>
+    allSuggestions.sort(() => Math.random() - 0.5).slice(0, 3)
+  );
+
   const isIntro = messages.length === 0;
 
   useEffect(() => {
@@ -158,7 +169,7 @@ const Index = () => {
                   transition={{ delay: 0.7 }}
                   className="flex flex-wrap justify-center gap-2 max-w-lg"
                 >
-                  {["Tell me a joke", "What can you do?", "Explain AI simply"].map((suggestion, i) => (
+                  {suggestions.map((suggestion, i) => (
                     <motion.button
                       key={suggestion}
                       whileHover={{ scale: 1.05, y: -2 }}
