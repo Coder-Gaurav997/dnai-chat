@@ -1,6 +1,13 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import { motion } from "framer-motion";
-import { Send } from "lucide-react";
+import { Send, Mic, MicOff } from "lucide-react";
+
+declare global {
+  interface Window {
+    SpeechRecognition: any;
+    webkitSpeechRecognition: any;
+  }
+}
 
 interface ChatInputProps {
   onSend: (message: string) => void;
@@ -8,9 +15,17 @@ interface ChatInputProps {
   isIntro: boolean;
 }
 
-const ChatInput = ({ onSend, isLoading, isIntro }: ChatInputProps) => {
+export interface ChatInputHandle {
+  focus: () => void;
+}
+
+const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(({ onSend, isLoading, isIntro }, ref) => {
   const [input, setInput] = useState("");
+  const [listening, setListening] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const recognitionRef = useRef<any>(null);
+
+  useImperativeHandle(ref, () => ({ focus: () => textareaRef.current?.focus() }));
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -32,6 +47,30 @@ const ChatInput = ({ onSend, isLoading, isIntro }: ChatInputProps) => {
     }
   };
 
+  const toggleVoice = () => {
+    if (listening && recognitionRef.current) {
+      recognitionRef.current.stop();
+      setListening(false);
+      return;
+    }
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) return;
+    const recognition = new SR();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.onresult = (e) => {
+      const transcript = e.results[0][0].transcript;
+      setInput((prev) => (prev ? prev + " " + transcript : transcript));
+    };
+    recognition.onend = () => setListening(false);
+    recognition.onerror = () => setListening(false);
+    recognitionRef.current = recognition;
+    recognition.start();
+    setListening(true);
+  };
+
+  const hasSpeech = typeof window !== "undefined" && !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+
   return (
     <motion.div
       layout
@@ -47,6 +86,21 @@ const ChatInput = ({ onSend, isLoading, isIntro }: ChatInputProps) => {
           rows={1}
           className="flex-1 resize-none bg-transparent px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none font-body"
         />
+        {hasSpeech && (
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={toggleVoice}
+            type="button"
+            className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
+              listening
+                ? "bg-destructive/20 text-destructive animate-pulse"
+                : "hover:bg-secondary text-muted-foreground"
+            }`}
+          >
+            {listening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+          </motion.button>
+        )}
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -67,6 +121,8 @@ const ChatInput = ({ onSend, isLoading, isIntro }: ChatInputProps) => {
       </div>
     </motion.div>
   );
-};
+});
+
+ChatInput.displayName = "ChatInput";
 
 export default ChatInput;

@@ -5,9 +5,9 @@ import { ChatMessage as ChatMessageType, AVAILABLE_MODELS, Model } from "@/lib/m
 import { ChatConfig, DEFAULT_CONFIG } from "@/lib/config";
 import { generateResponse } from "@/lib/huggingface";
 import ChatMessage from "@/components/ChatMessage";
-import ChatInput from "@/components/ChatInput";
+import ChatInput, { ChatInputHandle } from "@/components/ChatInput";
 import Sidebar from "@/components/Sidebar";
-
+import ExportDialog from "@/components/ExportDialog";
 import ThemeToggle from "@/components/ThemeToggle";
 import BackgroundEffects from "@/components/BackgroundEffects";
 import dnLogo from "@/assets/dn-logo.png";
@@ -17,9 +17,11 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedModel, setSelectedModel] = useState<Model>(AVAILABLE_MODELS[0]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
   
   const [config, setConfig] = useState<ChatConfig>(DEFAULT_CONFIG);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatInputRef = useRef<ChatInputHandle>(null);
 
   const allSuggestions = [
     "Tell me a joke", "What can you do?", "Explain AI simply",
@@ -37,6 +39,35 @@ const Index = () => {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSidebarOpen(false);
+        setExportOpen(false);
+        return;
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === "n") {
+        e.preventDefault();
+        handleNewChat();
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === "/") {
+        e.preventDefault();
+        chatInputRef.current?.focus();
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === "e") {
+        e.preventDefault();
+        if (messages.length > 0) setExportOpen(true);
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === ",") {
+        e.preventDefault();
+        setSidebarOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [messages.length]);
 
   const handleSend = async (content: string) => {
     const userMessage: ChatMessageType = {
@@ -88,6 +119,14 @@ const Index = () => {
         onNewChat={handleNewChat}
         config={config}
         onConfigChange={setConfig}
+        onExport={() => setExportOpen(true)}
+        hasMessages={messages.length > 0}
+      />
+
+      <ExportDialog
+        isOpen={exportOpen}
+        onClose={() => setExportOpen(false)}
+        messages={messages}
       />
 
       {/* Header */}
@@ -192,7 +231,7 @@ const Index = () => {
                   transition={{ delay: 0.9 }}
                   className="w-full px-4"
                 >
-                  <ChatInput onSend={handleSend} isLoading={isLoading} isIntro />
+                  <ChatInput ref={chatInputRef} onSend={handleSend} isLoading={isLoading} isIntro />
                 </motion.div>
               </motion.div>
             ) : (
@@ -233,7 +272,7 @@ const Index = () => {
                 </div>
 
                 <div className="flex-shrink-0 px-4 py-4 border-t border-border/50 bg-background/80 backdrop-blur-xl">
-                  <ChatInput onSend={handleSend} isLoading={isLoading} isIntro={false} />
+                  <ChatInput ref={chatInputRef} onSend={handleSend} isLoading={isLoading} isIntro={false} />
                 </div>
               </motion.div>
             )}
