@@ -123,10 +123,10 @@ const Index = () => {
                   className="relative"
                 >
                   <div className="absolute inset-0 w-24 h-24 rounded-full gradient-bg opacity-20 blur-xl animate-pulse-glow" />
-                  <motion.img
+                   <motion.img
                     src={dnLogo}
                     alt="DarkNeuronAI"
-                    className="w-24 h-24 relative z-10 rounded-full"
+                    className="w-24 h-24 relative z-10 rounded-full border-2 border-border"
                     animate={{ y: [0, -8, 0] }}
                     transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
                   />
