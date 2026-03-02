@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Cpu, Plus, Settings } from "lucide-react";
+import { X, Cpu, Plus, Settings, Download } from "lucide-react";
 import { AVAILABLE_MODELS, Model } from "@/lib/models";
 import { ChatConfig } from "@/lib/config";
 import ConfigPanel from "@/components/ConfigPanel";
@@ -14,9 +14,11 @@ interface SidebarProps {
   onNewChat: () => void;
   config: ChatConfig;
   onConfigChange: (config: ChatConfig) => void;
+  onExport: () => void;
+  hasMessages: boolean;
 }
 
-const Sidebar = ({ isOpen, onClose, selectedModel, onSelectModel, onNewChat, config, onConfigChange }: SidebarProps) => {
+const Sidebar = ({ isOpen, onClose, selectedModel, onSelectModel, onNewChat, config, onConfigChange, onExport, hasMessages }: SidebarProps) => {
   const [configOpen, setConfigOpen] = useState(false);
 
   return (
@@ -67,6 +69,17 @@ const Sidebar = ({ isOpen, onClose, selectedModel, onSelectModel, onNewChat, con
                 <Plus className="w-4 h-4" />
                 New Chat
               </motion.button>
+              {hasMessages && (
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => { onClose(); onExport(); }}
+                  className="w-full flex items-center gap-2 px-4 py-3 rounded-xl border border-border hover:bg-secondary transition-colors text-sm font-medium text-foreground"
+                >
+                  <Download className="w-4 h-4" />
+                  Export Chat
+                </motion.button>
+              )}
             </div>
 
             {/* Model Selection */}
