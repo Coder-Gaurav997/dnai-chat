@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
-import { Menu, Sparkles } from "lucide-react";
+import { Menu, Sparkles, Keyboard } from "lucide-react";
 import { ChatMessage as ChatMessageType, AVAILABLE_MODELS, Model } from "@/lib/models";
 import { ChatConfig, DEFAULT_CONFIG } from "@/lib/config";
 import { generateResponse } from "@/lib/huggingface";
@@ -10,6 +10,7 @@ import Sidebar from "@/components/Sidebar";
 import ExportDialog from "@/components/ExportDialog";
 import ThemeToggle from "@/components/ThemeToggle";
 import BackgroundEffects from "@/components/BackgroundEffects";
+import ShortcutsPanel from "@/components/ShortcutsPanel";
 import dnLogo from "@/assets/dn-logo.png";
 
 const Index = () => {
@@ -18,6 +19,7 @@ const Index = () => {
   const [selectedModel, setSelectedModel] = useState<Model>(AVAILABLE_MODELS[0]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
   
   const [config, setConfig] = useState<ChatConfig>(DEFAULT_CONFIG);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -46,6 +48,7 @@ const Index = () => {
       if (e.key === "Escape") {
         setSidebarOpen(false);
         setExportOpen(false);
+        setShortcutsOpen(false);
         return;
       }
       if (e.altKey && e.key === "n") {
@@ -63,6 +66,20 @@ const Index = () => {
       if (e.altKey && e.key === ",") {
         e.preventDefault();
         setSidebarOpen((prev) => !prev);
+      }
+      if (e.altKey && e.key === "k") {
+        e.preventDefault();
+        setShortcutsOpen((prev) => !prev);
+      }
+      if (e.altKey && e.key === "t") {
+        e.preventDefault();
+        document.querySelector<HTMLButtonElement>('[aria-label="Toggle theme"]')?.click();
+      }
+      if (e.altKey && e.key === "m") {
+        e.preventDefault();
+        const currentIdx = AVAILABLE_MODELS.findIndex((m) => m.id === selectedModel.id);
+        const nextIdx = (currentIdx + 1) % AVAILABLE_MODELS.length;
+        setSelectedModel(AVAILABLE_MODELS[nextIdx]);
       }
     };
     window.addEventListener("keydown", handler);
@@ -129,6 +146,11 @@ const Index = () => {
         messages={messages}
       />
 
+      <ShortcutsPanel
+        isOpen={shortcutsOpen}
+        onClose={() => setShortcutsOpen(false)}
+      />
+
       {/* Header */}
       <motion.header
         initial={{ y: -20, opacity: 0 }}
@@ -150,6 +172,13 @@ const Index = () => {
             {selectedModel.name}
           </div>
           <ThemeToggle />
+          <button
+            onClick={() => setShortcutsOpen(true)}
+            className="p-2 rounded-xl hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground"
+            aria-label="Keyboard shortcuts"
+          >
+            <Keyboard className="w-5 h-5" />
+          </button>
         </div>
       </motion.header>
 
