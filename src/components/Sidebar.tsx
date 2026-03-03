@@ -74,7 +74,7 @@ const Sidebar = ({ isOpen, onClose, selectedModel, onSelectModel, onNewChat, con
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => { onClose(); onExport(); }}
-                  className="w-full flex items-center gap-2 px-4 py-3 rounded-xl border border-border hover:bg-secondary transition-colors text-sm font-medium text-foreground"
+                  className="mt-2 w-full flex items-center gap-2 px-4 py-3 rounded-xl border border-border hover:bg-secondary transition-colors text-sm font-medium text-foreground"
                 >
                   <Download className="w-4 h-4" />
                   Export Chat
