@@ -1,19 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ChatMessage } from "@/lib/models";
-import { FileText, FileDown } from "lucide-react";
+import { FileText, FileDown, Loader2 } from "lucide-react";
+import { jsPDF } from "jspdf";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ExportDialogProps {
   isOpen: boolean;
   onClose: () => void;
   messages: ChatMessage[];
-}
-
-function generateTitle(messages: ChatMessage[]): string {
-  const first = messages.find((m) => m.role === "user");
-  if (!first) return "Chat Export";
-  const words = first.content.split(/\s+/).slice(0, 4).join(" ");
-  return words.charAt(0).toUpperCase() + words.slice(1);
 }
 
 function formatChat(title: string, messages: ChatMessage[]): string {
@@ -26,10 +21,25 @@ function formatChat(title: string, messages: ChatMessage[]): string {
 }
 
 const ExportDialog = ({ isOpen, onClose, messages }: ExportDialogProps) => {
-  const autoTitle = generateTitle(messages);
+  const [autoTitle, setAutoTitle] = useState("Chat Export");
+  const [titleLoading, setTitleLoading] = useState(false);
   const [fileName, setFileName] = useState("");
 
-  const safeName = (fileName.trim() || autoTitle.replace(/[^a-zA-Z0-9 ]/g, "").trim() || "chat");
+  useEffect(() => {
+    if (!isOpen || messages.length === 0) return;
+    const firstMsg = messages.find((m) => m.role === "user");
+    if (!firstMsg) return;
+
+    setTitleLoading(true);
+    supabase.functions
+      .invoke("generate-title", { body: { firstMessage: firstMsg.content } })
+      .then(({ data }) => {
+        if (data?.title) setAutoTitle(data.title);
+      })
+      .finally(() => setTitleLoading(false));
+  }, [isOpen, messages]);
+
+  const safeName = fileName.trim() || autoTitle.replace(/[^a-zA-Z0-9 ]/g, "").trim() || "chat";
 
   const downloadTxt = () => {
     const content = formatChat(autoTitle, messages);
@@ -43,13 +53,45 @@ const ExportDialog = ({ isOpen, onClose, messages }: ExportDialogProps) => {
   };
 
   const downloadPdf = () => {
-    const content = formatChat(autoTitle, messages);
-    const blob = new Blob([content], { type: "application/pdf" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `${safeName}.pdf`;
-    a.click();
-    URL.revokeObjectURL(a.href);
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 15;
+    const maxWidth = pageWidth - margin * 2;
+    let y = 20;
+
+    // Title
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    doc.text(autoTitle, margin, y);
+    y += 12;
+
+    // Messages
+    doc.setFontSize(11);
+    for (const m of messages) {
+      const label = m.role === "user" ? "User" : "DarkNeuronAI";
+      doc.setFont("helvetica", "bold");
+      const labelLines = doc.splitTextToSize(`${label}:`, maxWidth);
+      if (y + 7 > doc.internal.pageSize.getHeight() - 15) {
+        doc.addPage();
+        y = 20;
+      }
+      doc.text(labelLines, margin, y);
+      y += 6;
+
+      doc.setFont("helvetica", "normal");
+      const contentLines = doc.splitTextToSize(m.content, maxWidth);
+      for (const line of contentLines) {
+        if (y > doc.internal.pageSize.getHeight() - 15) {
+          doc.addPage();
+          y = 20;
+        }
+        doc.text(line, margin, y);
+        y += 5.5;
+      }
+      y += 6;
+    }
+
+    doc.save(`${safeName}.pdf`);
     onClose();
   };
 
@@ -62,7 +104,13 @@ const ExportDialog = ({ isOpen, onClose, messages }: ExportDialogProps) => {
         <div className="space-y-4">
           <div>
             <label className="text-xs text-muted-foreground font-medium">Chat Title</label>
-            <p className="text-sm font-semibold text-foreground mt-1">{autoTitle}</p>
+            {titleLoading ? (
+              <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
+                <Loader2 className="w-3 h-3 animate-spin" /> Generating title...
+              </div>
+            ) : (
+              <p className="text-sm font-semibold text-foreground mt-1">{autoTitle}</p>
+            )}
           </div>
           <div>
             <label className="text-xs text-muted-foreground font-medium">File Name (without extension)</label>
