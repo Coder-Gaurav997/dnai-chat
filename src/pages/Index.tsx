@@ -48,19 +48,19 @@ const Index = () => {
         setExportOpen(false);
         return;
       }
-      if ((e.ctrlKey || e.metaKey) && e.key === "n") {
+      if (e.altKey && e.key === "n") {
         e.preventDefault();
         handleNewChat();
       }
-      if ((e.ctrlKey || e.metaKey) && e.key === "/") {
+      if (e.altKey && e.key === "/") {
         e.preventDefault();
         chatInputRef.current?.focus();
       }
-      if ((e.ctrlKey || e.metaKey) && e.key === "e") {
+      if (e.altKey && e.key === "e") {
         e.preventDefault();
         if (messages.length > 0) setExportOpen(true);
       }
-      if ((e.ctrlKey || e.metaKey) && e.key === ",") {
+      if (e.altKey && e.key === ",") {
         e.preventDefault();
         setSidebarOpen((prev) => !prev);
       }
