@@ -58,31 +58,19 @@ const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(({ onSend, isLoadi
     if (!SR) return;
     const recognition = new SR();
     recognition.lang = "en-US";
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    let finalTranscript = "";
+    recognition.continuous = false;
+    recognition.interimResults = false;
     recognition.onresult = (e: any) => {
-      let interim = "";
-      for (let i = e.resultIndex; i < e.results.length; i++) {
-        const t = e.results[i][0].transcript;
-        if (e.results[i].isFinal) {
-          finalTranscript += t + " ";
-          setInput((prev) => (prev ? prev + " " + t : t).trim());
-        } else {
-          interim = t;
-        }
-      }
+      const transcript = e.results[0][0].transcript;
+      setInput((prev) => (prev ? prev + " " + transcript : transcript).trim());
     };
     recognition.onend = () => {
-      if (recognitionRef.current) {
-        try { recognition.start(); } catch { setListening(false); recognitionRef.current = null; }
-      }
+      setListening(false);
+      recognitionRef.current = null;
     };
-    recognition.onerror = (e: any) => {
-      if (e.error === "not-allowed" || e.error === "aborted") {
-        setListening(false);
-        recognitionRef.current = null;
-      }
+    recognition.onerror = () => {
+      setListening(false);
+      recognitionRef.current = null;
     };
     recognitionRef.current = recognition;
     recognition.start();
