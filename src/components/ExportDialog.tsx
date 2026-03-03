@@ -43,21 +43,13 @@ const ExportDialog = ({ isOpen, onClose, messages }: ExportDialogProps) => {
   };
 
   const downloadPdf = () => {
-    const html = `<!DOCTYPE html><html><head><title>${safeName}</title><style>
-      body{font-family:system-ui,sans-serif;max-width:700px;margin:40px auto;padding:20px;color:#222;line-height:1.6}
-      h1{font-size:1.4em;margin-bottom:1em}
-      .msg{margin-bottom:1em}
-      .label{font-weight:700}
-    </style></head><body>
-      <h1>${autoTitle}</h1>
-      ${messages.map((m) => `<div class="msg"><span class="label">${m.role === "user" ? "User" : "DarkNeuronAI"}:</span> ${m.content.replace(/</g, "&lt;")}</div>`).join("")}
-    </body></html>`;
-    const w = window.open("", "_blank");
-    if (w) {
-      w.document.write(html);
-      w.document.close();
-      setTimeout(() => w.print(), 300);
-    }
+    const content = formatChat(autoTitle, messages);
+    const blob = new Blob([content], { type: "application/pdf" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `${safeName}.pdf`;
+    a.click();
+    URL.revokeObjectURL(a.href);
     onClose();
   };
 
