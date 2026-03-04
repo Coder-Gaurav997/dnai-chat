@@ -7,46 +7,46 @@
 @layer base {
   :root {
     --background: 220 18% 95%;
-    --foreground: 230 25% 5%;
+    --foreground: 230 30% 8%;
 
     --card: 0 0% 100%;
-    --card-foreground: 230 25% 5%;
+    --card-foreground: 230 30% 8%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 230 25% 5%;
+    --popover-foreground: 230 30% 8%;
 
-    --primary: 230 80% 45%;
+    --primary: 230 85% 38%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 220 14% 88%;
-    --secondary-foreground: 230 25% 10%;
+    --secondary-foreground: 230 30% 8%;
 
     --muted: 220 12% 85%;
-    --muted-foreground: 220 15% 25%;
+    --muted-foreground: 220 20% 18%;
 
-    --accent: 320 75% 42%;
+    --accent: 320 80% 35%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 220 15% 82%;
+    --border: 220 15% 78%;
     --input: 220 14% 88%;
-    --ring: 230 80% 50%;
+    --ring: 230 85% 42%;
 
     --radius: 0.75rem;
 
     --sidebar-background: 220 18% 93%;
-    --sidebar-foreground: 230 20% 15%;
-    --sidebar-primary: 230 80% 50%;
+    --sidebar-foreground: 230 25% 10%;
+    --sidebar-primary: 230 85% 42%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 220 14% 86%;
-    --sidebar-accent-foreground: 230 20% 15%;
-    --sidebar-border: 220 15% 82%;
-    --sidebar-ring: 230 80% 50%;
+    --sidebar-accent-foreground: 230 25% 10%;
+    --sidebar-border: 220 15% 78%;
+    --sidebar-ring: 230 85% 42%;
 
-    --gradient-start: 230 80% 50%;
-    --gradient-end: 320 75% 48%;
+    --gradient-start: 230 85% 42%;
+    --gradient-end: 320 80% 38%;
   }
 
   .dark {
