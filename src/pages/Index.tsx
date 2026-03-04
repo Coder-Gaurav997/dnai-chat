@@ -217,7 +217,7 @@ const Index = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
-                    className="text-4xl md:text-5xl font-display font-bold gradient-text"
+                    className="text-4xl md:text-5xl font-display font-bold gradient-text pb-2"
                   >
                     Hey There!
                   </motion.h1>
