@@ -107,26 +107,50 @@
 @layer utilities {
   .gradient-text {
     @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(230 85% 45%), hsl(280 75% 42%), hsl(320 78% 40%));
+  }
+
+  .dark .gradient-text {
     background-image: linear-gradient(135deg, hsl(230 80% 62%), hsl(280 70% 60%), hsl(320 72% 58%));
   }
 
   .gradient-border {
+    border-image: linear-gradient(135deg, hsl(230 85% 45%), hsl(320 78% 40%)) 1;
+  }
+
+  .dark .gradient-border {
     border-image: linear-gradient(135deg, hsl(230 80% 62%), hsl(320 72% 58%)) 1;
   }
 
   .gradient-bg {
+    background: linear-gradient(135deg, hsl(230 85% 45%), hsl(280 75% 42%), hsl(320 78% 40%));
+  }
+
+  .dark .gradient-bg {
     background: linear-gradient(135deg, hsl(230 80% 62%), hsl(280 70% 60%), hsl(320 72% 58%));
   }
 
   .gradient-bg-subtle {
+    background: linear-gradient(135deg, hsl(230 85% 45% / 0.1), hsl(320 78% 40% / 0.1));
+  }
+
+  .dark .gradient-bg-subtle {
     background: linear-gradient(135deg, hsl(230 80% 62% / 0.1), hsl(320 72% 58% / 0.1));
   }
 
   .glow {
+    box-shadow: 0 0 30px hsl(230 85% 45% / 0.3), 0 0 60px hsl(320 78% 40% / 0.15);
+  }
+
+  .dark .glow {
     box-shadow: 0 0 30px hsl(230 80% 62% / 0.3), 0 0 60px hsl(320 72% 58% / 0.15);
   }
 
   .glow-text {
+    text-shadow: 0 0 20px hsl(230 85% 45% / 0.5), 0 0 40px hsl(320 78% 40% / 0.3);
+  }
+
+  .dark .glow-text {
     text-shadow: 0 0 20px hsl(230 80% 62% / 0.5), 0 0 40px hsl(320 72% 58% / 0.3);
   }
 
