@@ -175,7 +175,7 @@ const Index = () => {
           <ThemeToggle />
           <button
             onClick={() => setShortcutsOpen(true)}
-            className="p-2 rounded-xl hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground"
+            className="hidden md:inline-flex p-2 rounded-xl hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground"
             aria-label="Keyboard shortcuts"
           >
             <Keyboard className="w-5 h-5" />
