@@ -165,7 +165,8 @@ const Index = () => {
         </button>
         <div className="flex items-center gap-2">
           <img src={dnLogo} alt="DarkNeuronAI" className="w-7 h-7 rounded-full" />
-          <span className="font-display font-semibold text-foreground text-sm">DarkNeuronAI</span>
+          <span className="font-display font-semibold text-foreground text-sm hidden sm:inline">DarkNeuronAI</span>
+          <span className="font-display font-semibold text-foreground text-sm sm:hidden">DNAI</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="px-3 py-1 rounded-full bg-secondary text-xs text-muted-foreground font-medium">
